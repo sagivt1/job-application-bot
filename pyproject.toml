@@ -1,0 +1,70 @@
+[project]
+name = "job-application-bot"
+version = "0.1.0"
+description = "Telegram bot that scores job postings against your CV with an LLM, logs them to Airtable, and alerts you with a tailored cover letter for strong matches."
+readme = "README.md"
+requires-python = ">=3.12"
+scripts = { job-application-bot = "job_application_bot.__main__:main" }
+dependencies = [
+    "anthropic>=0.105.2",
+    "colorama>=0.4.6",
+    "google-genai>=2.7.0",
+    "httpx>=0.28.1",
+    "openai>=2.40.0",
+    "pyairtable>=3.3.0",
+    "pydantic>=2.13.4",
+    "pydantic-settings>=2.14.1",
+    "python-dotenv>=1.2.2",
+    "python-telegram-bot>=22.7",
+    "trafilatura>=2.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/job_application_bot"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "pytest-asyncio>=1.4.0",
+    "ruff>=0.15.15",
+]
+
+[tool.pytest.ini_options]
+# The package lives under src/, so add it to sys.path for test imports.
+pythonpath = ["src"]
+# Treat `async def test_*` as coroutine tests without per-test markers.
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes (undefined names, unused imports, etc.)
+    "I",    # isort (import ordering)
+    "B",    # flake8-bugbear (likely bugs & footguns)
+    "UP",   # pyupgrade (modern Python 3.12+ syntax)
+    "SIM",  # flake8-simplify (readability)
+    "C4",   # flake8-comprehensions
+    "D",    # pydocstyle (enforces the "well-documented" rule)
+    "RUF",  # ruff-specific rules
+]
+
+# Google-style docstrings (matches the CLAUDE.md code-style guidance).
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+# Tests don't need full docstring coverage.
+"tests/**" = ["D"]
+
+[tool.ruff.format]
+# Format example code inside docstrings too.
+docstring-code-format = true
